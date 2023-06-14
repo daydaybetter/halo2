@@ -412,6 +412,7 @@ impl<'r, F: Field> Table<'r, F> {
 ///
 /// This abstracts over the circuit assignments, handling row indices etc.
 ///
+/// Layouter就是用来实现布局，将Chip添加到一个电路上
 pub trait Layouter<F: Field> {
     /// Represents the type of the "root" of this layouter, so that nested namespaces
     /// can minimize indirection.
