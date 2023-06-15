@@ -32,7 +32,7 @@ trait NumericInstructions<F: FieldExt>: Chip<F> {
     ) -> Result<Self::Num, Error>;
 
     /// Exposes a number as a public input to the circuit.
-    /// 将一个数作为电路的公开输入
+    /// 设置instance，将一个数作为电路的公开输入
     fn expose_public(
         &self,
         layouter: impl Layouter<F>,
@@ -95,7 +95,7 @@ impl<F: FieldExt> FieldChip<F> {
         instance: Column<Instance>,
         constant: Column<Fixed>,
     ) -> <Self as Chip<F>>::Config {
-        meta.enable_equality(instance);
+        meta.enable_equality(instance); // 传入参数的相等性检查
         meta.enable_constant(constant);
         for column in &advice {
             meta.enable_equality(*column);
@@ -162,10 +162,12 @@ impl<F: FieldExt> Chip<F> for FieldChip<F> {
     type Config = FieldConfig;
     type Loaded = ();
 
+    /// 返回自定义chip的配置
     fn config(&self) -> &Self::Config {
         &self.config
     }
 
+    /// 返回自定义chip的载入数据
     fn loaded(&self) -> &Self::Loaded {
         &()
     }
@@ -399,5 +401,22 @@ fn main() {
     let prover = MockProver::run(k, &circuit, vec![public_inputs]).unwrap();
     println!("prover:\n{:?}", prover);
     assert!(prover.verify().is_err());
-    // ANCHOR_END: test-circuit
+
+    use plotters::prelude::*;
+    let root = BitMapBackend::new("simple-example-layout.png", (1024, 768)).into_drawing_area();
+    root.fill(&WHITE).unwrap();
+    let root = root
+        .titled("Simple Example Circuit Layout", ("sans-serif", 60))
+        .unwrap();
+
+    halo2_proofs::dev::CircuitLayout::default()
+        // You can optionally render only a section of the circuit.
+        .view_width(0..2)
+        .view_height(0..16)
+        // You can hide labels, which can be useful with smaller areas.
+        .show_labels(false)
+        // Render the circuit onto your area!
+        // The first argument is the size parameter for the circuit.
+        .render(5, &circuit, &root)
+        .unwrap();
 }

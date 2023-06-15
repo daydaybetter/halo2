@@ -110,6 +110,7 @@ impl<'a, F: Field, CS: Assignment<F> + 'a> Layouter<F> for SingleChipLayouter<'a
         let region_index = self.regions.len();
 
         // Get shape of the region.
+        // 获取当前SingleChipLayouter的region数量，构造一个RegionShape，且将该RegionShape传入closure
         let mut shape = RegionShape::new(region_index.into());
         {
             let timer_1st = start_timer!(|| format!("assign region 1st pass: {}", region_name));
@@ -129,6 +130,7 @@ impl<'a, F: Field, CS: Assignment<F> + 'a> Layouter<F> for SingleChipLayouter<'a
 
         // Lay out this region. We implement the simplest approach here: position the
         // region starting at the earliest row for which none of the columns are in use.
+        // 布置这个区域。我们在这里实施最简单的方法：将区域定位在没有使用任何列的最早行。
         let mut region_start = 0;
         for column in &shape.columns {
             let column_start = self.columns.get(column).cloned().unwrap_or(0);
@@ -153,11 +155,13 @@ impl<'a, F: Field, CS: Assignment<F> + 'a> Layouter<F> for SingleChipLayouter<'a
         self.regions.push(region_start.into());
 
         // Update column usage information.
+        // 更新列使用信息。
         for column in shape.columns {
             self.columns.insert(column, region_start + shape.row_count);
         }
 
         // Assign region cells.
+        // 分配区域单元格。
         self.cs.enter_region(name);
         let mut region = SingleChipLayouterRegion::new(self, region_index.into());
         let result = {
@@ -172,6 +176,7 @@ impl<'a, F: Field, CS: Assignment<F> + 'a> Layouter<F> for SingleChipLayouter<'a
 
         // Assign constants. For the simple floor planner, we assign constants in order in
         // the first `constants` column.
+        // 分配常量。对于简单的floor planner，我们在第一个`constants`列中按顺序分配常量。
         if self.constants.is_empty() {
             if !constants_to_assign.is_empty() {
                 return Err(Error::NotEnoughColumnsForConstants);
