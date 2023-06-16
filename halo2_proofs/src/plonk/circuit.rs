@@ -654,6 +654,8 @@ pub trait Assignment<F: Field>: Sized + Send {
 ///
 /// The floor planner is chip-agnostic and applies its strategy to the circuit it is used
 /// within.
+/// 电路的平面规划策略
+/// 布局规划器与芯片无关，并将其策略应用于所使用的电路
 pub trait FloorPlanner {
     /// Given the provided `cs`, synthesize the given circuit.
     ///
@@ -665,6 +667,12 @@ pub trait FloorPlanner {
     /// - Perform any necessary setup or measurement tasks, which may involve one or more
     ///   calls to `Circuit::default().synthesize(config, &mut layouter)`.
     /// - Call `circuit.synthesize(config, &mut layouter)` exactly once.
+    /// 给定提供的`cs`，合成给定的电路。
+    /// 全局常量值。这些列都将启用相等性。
+    /// 在内部，平面规划师将执行以下操作：
+    /// - 为此平面规划器实例化一个[`Layouter`]。
+    /// - 执行任何必要的设置或测量任务，这可能涉及一次或多次的`Circuit::default().synthesize(config, &mut layouter)`调用
+    /// - 只调用一次`circuit.synthesize(config, &mut layouter)`
     fn synthesize<F: Field, CS: Assignment<F>, C: Circuit<F>>(
         cs: &mut CS,
         circuit: &C,
@@ -1707,6 +1715,7 @@ impl<F: Field> ConstraintSystem<F> {
     ///
     /// A gate is required to contain polynomial constraints. This method will panic if
     /// `constraints` returns an empty iterator.
+    /// 创建新gate
     pub fn create_gate<C: Into<Constraint<F>>, Iter: IntoIterator<Item = C>>(
         &mut self,
         name: &'static str,
