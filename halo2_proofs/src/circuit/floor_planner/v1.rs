@@ -274,6 +274,7 @@ impl MeasurementPass {
         let region_index = self.regions.len();
 
         // Get shape of the region.
+        // 获取该区域的形状。
         let mut shape = RegionShape::new(region_index.into());
         let result = {
             let region: &mut dyn RegionLayouter<F> = &mut shape;
@@ -308,6 +309,7 @@ impl<'p, 'a, F: Field, CS: Assignment<F> + 'a> AssignmentPass<'p, 'a, F, CS> {
         NR: Into<String>,
     {
         // Get the next region we are assigning.
+        // 获取我们要分配的下一个区域。
         let region_index = self.region_index;
         self.region_index += 1;
 

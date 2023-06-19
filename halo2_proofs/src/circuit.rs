@@ -430,6 +430,8 @@ pub trait Layouter<F: Field> {
     ///     region.assign_advice(config.a, offset, || { Some(value)});
     /// });
     /// ```
+    /// 将门区域分配给绝对行号。
+    /// 在封闭内部，芯片可以自由使用相对偏移量； `Layouter` 会将这些分配视为电路中的单个“区域”。在这个闭包之外，Layouter 可以根据需要进行优化。
     fn assign_region<A, AR, N, NR>(&mut self, name: N, assignment: A) -> Result<AR, Error>
     where
         A: FnMut(Region<'_, F>) -> Result<AR, Error>,
