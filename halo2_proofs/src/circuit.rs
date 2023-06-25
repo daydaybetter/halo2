@@ -458,6 +458,7 @@ pub trait Layouter<F: Field> {
     ///     table.assign_fixed(config.a, offset, || { Some(value)});
     /// });
     /// ```
+    /// 将表区域分配给绝对行号。
     fn assign_table<A, N, NR>(&mut self, name: N, assignment: A) -> Result<(), Error>
     where
         A: FnMut(Table<'_, F>) -> Result<(), Error>,
@@ -466,6 +467,7 @@ pub trait Layouter<F: Field> {
 
     /// Constrains a [`Cell`] to equal an instance column's row value at an
     /// absolute position.
+    /// 将[`Cell`]约束为等于绝对位置下instance column的行值。
     fn constrain_instance(
         &mut self,
         cell: Cell,
