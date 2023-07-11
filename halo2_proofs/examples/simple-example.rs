@@ -393,30 +393,30 @@ fn main() {
     // Given the correct public input, our circuit will verify.
     // 给定正确的公开输入，我们的电路能验证通过
     let prover = MockProver::run(k, &circuit, vec![public_inputs.clone()]).unwrap();
+    println!("prover1:\n{:?}", prover);
     assert_eq!(prover.verify(), Ok(()));
-
-    // If we try some other public input, the proof will fail!
-    // 如果我们尝试用其他的公开输入，证明将失败！
-    public_inputs[0] += Fp::one();
-    let prover = MockProver::run(k, &circuit, vec![public_inputs]).unwrap();
-    println!("prover:\n{:?}", prover);
-    assert!(prover.verify().is_err());
 
     use plotters::prelude::*;
     let root = BitMapBackend::new("simple-example-layout.png", (1024, 768)).into_drawing_area();
     root.fill(&WHITE).unwrap();
     let root = root
-        .titled("Simple Example Circuit Layout", ("sans-serif", 60))
+        .titled("Simple Example Circuit Layout", ("sans-serif", 24))
         .unwrap();
 
     halo2_proofs::dev::CircuitLayout::default()
         // You can optionally render only a section of the circuit.
-        .view_width(0..2)
-        .view_height(0..16)
+        .view_width(0..6)
+        .view_height(0..11)
         // You can hide labels, which can be useful with smaller areas.
-        .show_labels(false)
+        .show_labels(true)
         // Render the circuit onto your area!
         // The first argument is the size parameter for the circuit.
         .render(5, &circuit, &root)
         .unwrap();
+
+    // If we try some other public input, the proof will fail!
+    // 如果我们尝试用其他的公开输入，证明将失败！
+    public_inputs[0] += Fp::one();
+    let prover = MockProver::run(k, &circuit, vec![public_inputs]).unwrap();
+    assert!(prover.verify().is_err());
 }

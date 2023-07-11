@@ -285,10 +285,10 @@ fn main() {
     // Create the area you want to draw on.
     // Use SVGBackend if you want to render to .svg instead.
     use plotters::prelude::*;
-    let root = BitMapBackend::new("layout.png", (1024, 768)).into_drawing_area();
+    let root = BitMapBackend::new("circuit-layout.png", (1024, 768)).into_drawing_area();
     root.fill(&WHITE).unwrap();
     let root = root
-        .titled("Example Circuit Layout", ("sans-serif", 60))
+        .titled("Example Circuit Layout", ("sans-serif", 24))
         .unwrap();
 
     halo2_proofs::dev::CircuitLayout::default()
